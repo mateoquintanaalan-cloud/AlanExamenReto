@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reserva de Libros</title>
+
+    <style>
+        body {
+            background-color: #eef3f4;
+        }
+
+        h1 {
+            color: #17466a;
+        }
+
+        .caja {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .reserva {
+            background-color: #e5f5fa;
+            padding: 12px;
+            margin-top: 10px;
+            border-radius: 5px;
+        }
+
+        .reserva strong {
+            color: #1768aa;
+        }
+
+
+    </style>
+</head>
+
+<body>
+
+    <div>
+
+        <h1>Biblioteca - Reserva de Libros</h1>
+
+        <div>
+
+            <!--columna libros disponibles-->
+            <div>
+
+                <div class="caja">
+                    <h3>Libros Disponibles</h3>
+
+                    <div>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Título</th>
+                                    <th>Autor</th>
+                                    <th>Género</th>
+                                    <th>Año</th>
+                                </tr>
+                            </thead>
+
+                            <tbody id="tablaLibros"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!--columna reservar-->
+            <div>
+
+                <div class="caja">
+
+                    <h3>Reservar un Libro</h3>
+
+                    <div>
+
+                        <div>
+                            <label for="seleccionarLibro">
+                                Selecciona un libro
+                            </label>
+
+                            <select id="seleccionarLibro">
+                                <option value="">Selecciona un libro</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <button id="botonReservar">
+                                Reservar
+                            </button>
+                        </div>
+
+                    </div>
+
+                    <hr>
+
+                    <h4>Reservas Realizadas</h4>
+
+                    <div id="listaReservas">
+                        <p id="sinReservas">Todavía no hay reservas.</p>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+
+        // array de libro
+        let libros = [
+            {
+                titulo: "1984",
+                autor: "George Orwell",
+                genero: "Distopía",
+                año: 1949
+            },
+            {
+                titulo: "Orgullo y Prejuicio",
+                autor: "Jane Austen",
+                genero: "Romance",
+                año: 1813
+            },
+            {
+                titulo: "Cien años de soledad",
+                autor: "Gabriel García Márquez",
+                genero: "Realismo Mágico",
+                año: 1967
+            },
+            {
+                titulo: "El Gran Gatsby",
+                autor: "F. Scott Fitzgerald",
+                genero: "Tragedia",
+                año: 1925
+            },
+            {
+                titulo: "Matar a un ruiseñor",
+                autor: "Harper Lee",
+                genero: "Ficción",
+                año: 1960
+            }
+        ];
+
+
+        // el array para guardar las reservas
+
+        let reservas = [];
+
+        // aqui pillo el elemento del html
+        let tablaLibros = document.getElementById("tablaLibros");
+        let seleccionarLibro = document.getElementById("seleccionarLibro");
+        let listaReservas = document.getElementById("listaReservas");
+        let botonReservar = document.getElementById("botonReservar");
+
+        // para mostrar los libros en el select y en las tablas
+
+        function mostrarLibros() {
+
+            for (let i = 0; i < libros.length; i++) {
+
+                // añadir libro a la tabla
+                tablaLibros.innerHTML += `
+                    <tr>
+                        <td>${libros[i].titulo}</td>
+                        <td>${libros[i].autor}</td>
+                        <td>${libros[i].genero}</td>
+                        <td>${libros[i].año}</td>
+                    </tr>`;
+
+                // añadir libro al desplegable
+                seleccionarLibro.innerHTML += `
+                    <option value="${i}">
+                        ${libros[i].titulo}
+                    </option>`;
+            }
+        }
+
+
+        // Funcion reservar el libr
+
+        function reservarLibro() {
+
+            // Saber qué libro ha seleccionado
+            let posicion = seleccionarLibro.value;
+
+            // Comprobar que haya elegido uno
+            if (posicion === "") {
+                alert("Selecciona un libro primero");
+                return;
+            }
+
+            // Conseguir el libro del array
+            let libro = libros[posicion];
+
+            // Fecha y hora actuales
+            let fecha = new Date();
+
+            let fechaReserva = fecha.toLocaleDateString("es-ES");
+            let horaReserva = fecha.toLocaleTimeString("es-ES");
+
+            // Crear una reserva
+            let nuevaReserva = {
+                titulo: libro.titulo,
+                autor: libro.autor,
+                fecha: fechaReserva,
+                hora: horaReserva
+            };
+
+            // Guardarla al principio en el array
+            reservas.unshift(nuevaReserva);
+
+            // Actualizar la lista
+            mostrarReservas();
+        }
+
+
+        // poner todas las reservas
+
+        function mostrarReservas() {
+
+            // Limpiar la lista antes de pintarla
+            listaReservas.innerHTML = "";
+
+            for (let i = 0; i < reservas.length; i++) {
+
+                listaReservas.innerHTML += `
+                    <div class="reserva">
+                        <strong>${reservas[i].titulo}</strong>
+                        por ${reservas[i].autor}
+                        <br>
+                        Reservado el: ${reservas[i].fecha},
+                        ${reservas[i].hora}
+                    </div>`;
+            }
+        }
+
+
+        // cuando clicamos en el reservar
+
+        botonReservar.addEventListener("click", reservarLibro);
+
+
+        // que ponga los libros al cargar la pagina 
+
+        mostrarLibros();
+
+    </script>
+
+</body>
+</html>
